@@ -2,30 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Memo Cards</title>
+  <title>Memo Cards v3</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
-
 <body>
-  <div id="app">
+  <div id="sidebar" style="display:none;">
+    <h3>All Memos</h3>
+    <ul id="memoList"></ul> <!-- memo 列表 -->
+    <button id="archiveBtn">Archived</button> <!-- 归档按钮 -->
+  </div>
+
+  <div id="main-content">
     <div id="card"></div>
-
-    <div class="buttons">
-      <button id="randomBtn">random</button>
-      <button id="allBtn">all</button>
-      <button id="addBtn">add</button>
-    </div>
-
     <div id="panel"></div>
+    <div id="buttons">
+      <button id="randomBtn">Random</button>
+      <button id="allBtn">All</button>
+      <button id="addBtn">Add</button>
+    </div>
   </div>
 
   <script src="script.js"></script>
