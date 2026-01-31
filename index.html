@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memo Cards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div id="card"></div>
+
+    <div class="buttons">
+      <button id="randomBtn">random</button>
+      <button id="allBtn">all</button>
+      <button id="addBtn">add</button>
+    </div>
+
+    <div id="panel"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
