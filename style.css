@@ -47,19 +47,27 @@ button:hover {
 }
 
 /* Side panel styles */
+/* Sidebar transition */
 #sidebar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: -250px;  /* Initially hide it off-screen */
   width: 250px;
   height: 100%;
   background-color: #333;
   color: #f0f0f0;
   padding: 20px;
   overflow-y: auto;
-  transition: all 0.3s ease;
-  display: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;  /* Initially set opacity to 0 (hidden) */
 }
+
+/* Sidebar visible */
+#sidebar.visible {
+  transform: translateX(250px);  /* Move the sidebar into view */
+  opacity: 1;  /* Make it visible */
+}
+
 
 #memoList li {
   margin: 10px 0;
