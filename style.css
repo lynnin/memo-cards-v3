@@ -54,7 +54,7 @@ button:hover {
 
 /* Active button state */
 button.active {
-  background: #666;
+  background: #666;  /* Change this color to something that fits your design */
 }
 
 /* Sidebar transition */
@@ -87,6 +87,7 @@ button.active {
   height: 100%;
   z-index: 9;
 }
+
 
 #sidebar h2 {
   margin-top: 0;
