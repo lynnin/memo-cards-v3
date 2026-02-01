@@ -117,8 +117,9 @@ function showCard(memo) {
   allBtn.style.display = "none";
   addBtn.style.display = "none";
 
-  // Display full view
-  card.classList.add("full-view");
+  // Show overlay and popup
+  document.getElementById("overlay").classList.add("active");
+  card.classList.add("full-view", "active");
   card.innerHTML = renderMarkdown(memo.content);
   panel.innerHTML = `
     <button id="closePopup" class="close-popup">×</button>
@@ -129,16 +130,16 @@ function showCard(memo) {
 
   const closePopup = document.getElementById("closePopup");
   closePopup.onclick = () => {
-    // Close popup and restore main buttons
-    card.classList.remove("full-view");
-    panel.innerHTML = "";
+    // Close the modal and remove overlay
+    document.getElementById("overlay").classList.remove("active");
+    card.classList.remove("full-view", "active");
 
     randomBtn.style.display = "inline-block";
     allBtn.style.display = "inline-block";
     addBtn.style.display = "inline-block";
   };
 
-  // Handle edit, archive, and delete
+  // Handle edit, archive, and delete actions...
   document.getElementById("editBtn").onclick = () => {
     panel.innerHTML = `
       <textarea id="editMemo">${memo.content}</textarea>
