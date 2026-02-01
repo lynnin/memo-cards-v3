@@ -9,7 +9,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /***** DOM *****/
-const card = document.getElementById("memoDisplay");
+const card = document.getElementById("card");
 const panel = document.getElementById("panel");
 const sidebar = document.getElementById("sidebar");
 const memoList = document.getElementById("memoList");
@@ -74,8 +74,8 @@ addBtn.onclick = () => {
 // Show All Memos in sidebar (toggle sidebar)
 allBtn.onclick = async () => {
   isSidebarVisible = !isSidebarVisible;
-  sidebar.classList.toggle("show", isSidebarVisible);
-  allBtn.classList.toggle("active", isSidebarVisible); // Toggle active state on the button
+  sidebar.classList.toggle("show", isSidebarVisible);  // Toggle sidebar visibility
+  allBtn.classList.toggle("active", isSidebarVisible);  // Toggle active class on the button
 
   const memos = await getAllMemos();
   renderList(memos);
