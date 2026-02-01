@@ -93,14 +93,32 @@ archiveBtn.onclick = async () => {
 
 // 弹窗功能按钮
 function showCard(memo) {
+  // 隐藏主页按钮
+  document.getElementById("randomBtn").style.display = "none";
+  document.getElementById("allBtn").style.display = "none";
+  document.getElementById("addBtn").style.display = "none";
+
+  // 添加弹窗和关闭按钮
+  card.classList.add("full-view");  // 让弹窗有独特的样式
   card.innerHTML = renderMarkdown(memo.content);
   panel.innerHTML = `
+    <button id="closePopup">×</button>
     <button id="archiveBtn">Archive</button>
     <button id="deleteBtn">Delete</button>
     <button id="editBtn">Edit</button>
   `;
 
-  // 使按钮仅在点击后显示
+  // 设置关闭弹窗的按钮
+  const closePopup = document.getElementById("closePopup");
+  closePopup.onclick = () => {
+    // 隐藏弹窗，恢复主页按钮
+    card.classList.remove("full-view");
+    document.getElementById("randomBtn").style.display = "inline-block";
+    document.getElementById("allBtn").style.display = "inline-block";
+    document.getElementById("addBtn").style.display = "inline-block";
+  };
+
+  // 编辑功能
   const editBtn = document.getElementById("editBtn");
   const archiveBtn = document.getElementById("archiveBtn");
   const deleteBtn = document.getElementById("deleteBtn");
@@ -121,7 +139,7 @@ function showCard(memo) {
 
   archiveBtn.onclick = async () => {
     await db.collection("memos").doc(memo.id).update({
-      weight: 0.2  // 将归档的 memos 的显示概率减少
+      weight: 0.2  // 归档：减少其出现概率
     });
   };
 
@@ -131,16 +149,6 @@ function showCard(memo) {
       showCard("Memo deleted!");
     }
   };
-}
-
-function showCard(memo) {
-  card.classList.add("full-view"); // 使其与主页区分
-  card.innerHTML = renderMarkdown(memo.content);
-  panel.innerHTML = `
-    <button id="archiveBtn">Archive</button>
-    <button id="deleteBtn">Delete</button>
-    <button id="editBtn">Edit</button>
-  `;
 }
 
 
