@@ -1,159 +1,145 @@
-/* Main page styles */
-body {
-  margin: 0;
-  padding: 40px 20px;
-  background-color: #2c2c2c; /* Dark gray background */
-  font-family: 'Helvetica Neue', sans-serif;
-  text-align: center;
-  color: #e0e0e0; /* Light gray text */
-}
-
-#card {
-  max-width: 600px;
-  margin: 60px auto;
-  text-align: left;
-}
-
-#memoText {
-  font-size: 26px;
-  line-height: 1.6;
-}
-
-#buttons {
-  margin-top: 40px;
-}
-
-button {
-  margin: 0 6px;
-  padding: 8px 14px;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: #444;
-  color: #f0f0f0;
-  border: none;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background-color: #666; /* Slightly lighter on hover */
-}
-
-#panel {
-  max-width: 600px;
-  margin: 40px auto 0;
-  text-align: left;
-  font-size: 16px;
-}
-
-/* Side panel styles */
-/* Sidebar transition */
-#sidebar {
-  position: fixed;
-  top: 0;
-  left: -250px;  /* Initially hide it off-screen */
-  width: 250px;
-  height: 100%;
-  background-color: #333;
-  color: #f0f0f0;
-  padding: 20px;
-  overflow-y: auto;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0;  /* Initially set opacity to 0 (hidden) */
-}
-
-/* Sidebar visible */
-#sidebar.visible {
-  transform: translateX(250px);  /* Move the sidebar into view */
-  opacity: 1;  /* Make it visible */
-}
-
-#memoList li {
-  margin: 10px 0;
-  cursor: pointer;
-}
-
-#memoList li:hover {
-  background-color: #555;
-}
-
-/* Full memo view (popup) styles */
-#card.full-view {
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin: 20px auto;
-  max-width: 80%;
-  text-align: left;
-}
-
-#card .close-popup {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-#editMemo {
-  width: 100%;
-  height: 100px;
-  font-size: 16px;
-  padding: 8px;
+* {
   box-sizing: border-box;
 }
 
-/* Full-screen overlay */
-#overlay {
+body {
+  margin: 0;
+  background: #1f1f1f;
+  color: #e6e6e6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Main */
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.card {
+  width: min(80vw, 420px);
+  min-height: 180px;
+  padding: 24px;
+  background: #2a2a2a;
+  border-radius: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  background: #333;
+  color: #eee;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #444;
+  transform: translateY(-1px);
+}
+
+/* Sidebar */
+#sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 280px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
-  opacity: 0;  /* Initially hidden */
-  transition: opacity 0.3s ease;
-  z-index: -1; /* Keep behind the popup */
-}
-
-/* When popup is active, show overlay */
-#overlay.active {
-  opacity: 1;
-  z-index: 100; /* Bring overlay above content */
-}
-
-/* Smooth popup appearance */
-#card.full-view {
-  background-color: #fff;
+  background: #262626;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(-240px);
+  transition: transform 0.35s ease;
+  z-index: 10;
+  overflow-y: auto;
+}
+
+#sidebar.show {
+  transform: translateX(0);
+}
+
+#sidebar h2 {
+  margin-top: 0;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.memo-item {
+  padding: 10px;
+  margin-bottom: 6px;
   border-radius: 8px;
-  margin: 20px auto;
-  max-width: 80%;
-  text-align: left;
-  transform: scale(0.9);
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-#card.full-view.active {
-  transform: scale(1);
-  opacity: 1;
-}
-
-/* Close button for the popup */
-#closePopup {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #ff4081;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-#closePopup:hover {
-  color: #e91e63;
+.memo-item:hover {
+  background: #333;
+}
+
+.memo-item.archived {
+  opacity: 0.4;
+}
+
+/* Hover zone */
+#sidebar-hover-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 100%;
+  z-index: 9;
+}
+
+/* Modal */
+#modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+#modalOverlay.show {
+  display: flex;
+}
+
+.modal {
+  background: #2b2b2b;
+  width: min(90vw, 420px);
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.modal textarea {
+  width: 100%;
+  height: 120px;
+  background: #1f1f1f;
+  color: #eee;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  resize: none;
+}
+
+.modal-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
 }
 
