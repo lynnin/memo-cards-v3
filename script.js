@@ -131,3 +131,17 @@ function showCard(markdownText) {
     }
   };
 }
+
+const q = query(memosRef, orderBy("createdAt", "desc"));
+
+onSnapshot(q, (snapshot) => {
+  cardsDiv.innerHTML = "";
+  
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    const div = document.createElement("div");
+    div.className = "card";
+    div.textContent = data.text;
+    cardsDiv.appendChild(div);
+  });
+});
