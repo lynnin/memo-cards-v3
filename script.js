@@ -36,21 +36,32 @@ async function getAllMemos() {
 }
 
 /***** Actions *****/
-// 显示 memo 列表（all）
+// Toggle sidebar visibility and change button color when clicked
+let isSidebarVisible = false;
+
 allBtn.onclick = async () => {
-  sidebar.style.display = "block";  // 显示侧边栏
+  isSidebarVisible = !isSidebarVisible; // Toggle sidebar visibility
+
+  if (isSidebarVisible) {
+    sidebar.style.display = "block"; // Show sidebar
+    allBtn.style.backgroundColor = "#888"; // Change button color when activated
+  } else {
+    sidebar.style.display = "none"; // Hide sidebar
+    allBtn.style.backgroundColor = ""; // Restore original button color
+  }
+
   const memos = await getAllMemos();
   memoList.innerHTML = '';
 
   memos.forEach(memo => {
     const li = document.createElement("li");
-    li.innerText = memo.content.substring(0, 50) + '...'; // 显示部分文本
-    li.onclick = () => showCard(memo);  // 点击显示完整内容
+    li.innerText = memo.content.substring(0, 50) + '...';
+    li.onclick = () => showCard(memo);  // Show full content when clicked
     memoList.appendChild(li);
   });
 };
 
-// 随机显示一个 memo
+// Display a random memo
 randomBtn.onclick = async () => {
   const memos = await getAllMemos();
   if (!memos.length) {
@@ -61,7 +72,7 @@ randomBtn.onclick = async () => {
   showCard(m.content);
 };
 
-// 添加新 memo
+// Add a new memo
 addBtn.onclick = () => {
   panel.innerHTML = `
     <textarea id="newMemo" placeholder="write markdown here..."></textarea>
@@ -82,26 +93,24 @@ addBtn.onclick = () => {
   };
 };
 
-// 归档按钮（低概率显示）
+// Archive a memo
 archiveBtn.onclick = async () => {
   const memos = await getAllMemos();
   panel.innerHTML = memos
-    .filter(memo => memo.weight === 0.2)  // 只显示已归档的 memo
+    .filter(memo => memo.weight === 0.2)  // Display archived memos only
     .map(memo => `<div class="archived-item">${renderMarkdown(memo.content)}</div>`)
     .join("");
 };
 
-
-
-// 弹窗功能按钮
+// Popup functionality for full memo view
 function showCard(memo) {
-  // 隐藏主页按钮
-  document.getElementById("randomBtn").style.display = "none";
-  document.getElementById("allBtn").style.display = "none";
-  document.getElementById("addBtn").style.display = "none";
+  // Hide main buttons
+  randomBtn.style.display = "none";
+  allBtn.style.display = "none";
+  addBtn.style.display = "none";
 
-  // 弹窗显示
-  card.classList.add("full-view");  // 弹窗样式
+  // Display full view
+  card.classList.add("full-view");
   card.innerHTML = renderMarkdown(memo.content);
   panel.innerHTML = `
     <button id="closePopup" class="close-popup">×</button>
@@ -110,97 +119,39 @@ function showCard(memo) {
     <button id="deleteBtn">Delete</button>
   `;
 
-  // 关闭弹窗的按钮样式
   const closePopup = document.getElementById("closePopup");
   closePopup.onclick = () => {
-    // 隐藏弹窗，恢复主页按钮和侧边栏状态
+    // Close popup and restore main buttons
     card.classList.remove("full-view");
     panel.innerHTML = "";
 
-    document.getElementById("randomBtn").style.display = "inline-block";
-    document.getElementById("allBtn").style.display = "inline-block";
-    document.getElementById("addBtn").style.display = "inline-block";
-
-    // 让 all 按钮保持激活状态
-    allBtn.style.backgroundColor = "#888";  // 激活时的颜色
+    randomBtn.style.display = "inline-block";
+    allBtn.style.display = "inline-block";
+    addBtn.style.display = "inline-block";
   };
 
-  // 继续处理 edit, archive, delete 的功能
-  const editBtn = document.getElementById("editBtn");
-  const archiveBtn = document.getElementById("archiveBtn");
-  const deleteBtn = document.getElementById("deleteBtn");
-
-  editBtn.onclick = () => {
+  // Handle edit, archive, and delete
+  document.getElementById("editBtn").onclick = () => {
     panel.innerHTML = `
       <textarea id="editMemo">${memo.content}</textarea>
       <button id="saveEdit">Save</button>
     `;
     document.getElementById("saveEdit").onclick = async () => {
       const newContent = document.getElementById("editMemo").value.trim();
-      await db.collection("memos").doc(memo.id).update({
-        content: newContent,
-      });
+      await db.collection("memos").doc(memo.id).update({ content: newContent });
       showCard({ ...memo, content: newContent });
     };
   };
 
-  archiveBtn.onclick = async () => {
-    await db.collection("memos").doc(memo.id).update({
-      weight: 0.2  // 归档：减少其出现概率
-    });
+  document.getElementById("archiveBtn").onclick = async () => {
+    await db.collection("memos").doc(memo.id).update({ weight: 0.2 });
   };
 
-  deleteBtn.onclick = async () => {
+  document.getElementById("deleteBtn").onclick = async () => {
     if (confirm("Are you sure you want to delete this memo?")) {
       await db.collection("memos").doc(memo.id).delete();
       showCard("Memo deleted!");
     }
   };
-}
-
-// 控制 all 按钮和侧边栏显示隐藏
-let isSidebarVisible = false;
-
-allBtn.onclick = async () => {
-  isSidebarVisible = !isSidebarVisible; // 切换状态
-
-  if (isSidebarVisible) {
-    sidebar.style.display = "block"; // 显示侧边栏
-    allBtn.style.backgroundColor = "#888"; // 改变按钮颜色
-  } else {
-    sidebar.style.display = "none"; // 隐藏侧边栏
-    allBtn.style.backgroundColor = ""; // 恢复按钮颜色
-  }
-
-  const memos = await getAllMemos();
-  memoList.innerHTML = '';
-
-  memos.forEach(memo => {
-    const li = document.createElement("li");
-    li.innerText = memo.content.substring(0, 50) + '...'; // 显示部分文本
-    li.onclick = () => showCard(memo);  // 点击显示完整内容
-    memoList.appendChild(li);
-  });
 };
 
-// 在鼠标移动到靠左位置时显示侧边栏，前提是 all 按钮被激活
-document.addEventListener("mousemove", (event) => {
-  if (isSidebarVisible && event.clientX < 50) {
-    sidebar.style.display = "block"; // 鼠标靠左时显示侧边栏
-  }
-});
-
-
-const q = query(memosRef, orderBy("createdAt", "desc"));
-
-onSnapshot(q, (snapshot) => {
-  cardsDiv.innerHTML = "";
-  
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const div = document.createElement("div");
-    div.className = "card";
-    div.textContent = data.text;
-    cardsDiv.appendChild(div);
-  });
-});
