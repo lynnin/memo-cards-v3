@@ -133,6 +133,16 @@ function showCard(memo) {
   };
 }
 
+function showCard(memo) {
+  card.classList.add("full-view"); // 使其与主页区分
+  card.innerHTML = renderMarkdown(memo.content);
+  panel.innerHTML = `
+    <button id="archiveBtn">Archive</button>
+    <button id="deleteBtn">Delete</button>
+    <button id="editBtn">Edit</button>
+  `;
+}
+
 
 const q = query(memosRef, orderBy("createdAt", "desc"));
 
