@@ -91,6 +91,8 @@ archiveBtn.onclick = async () => {
     .join("");
 };
 
+
+
 // 弹窗功能按钮
 function showCard(memo) {
   // 隐藏主页按钮
@@ -98,27 +100,32 @@ function showCard(memo) {
   document.getElementById("allBtn").style.display = "none";
   document.getElementById("addBtn").style.display = "none";
 
-  // 添加弹窗和关闭按钮
-  card.classList.add("full-view");  // 让弹窗有独特的样式
+  // 弹窗显示
+  card.classList.add("full-view");  // 弹窗样式
   card.innerHTML = renderMarkdown(memo.content);
   panel.innerHTML = `
-    <button id="closePopup">×</button>
+    <button id="closePopup" class="close-popup">×</button>
+    <button id="editBtn">Edit</button>
     <button id="archiveBtn">Archive</button>
     <button id="deleteBtn">Delete</button>
-    <button id="editBtn">Edit</button>
   `;
 
-  // 设置关闭弹窗的按钮
+  // 关闭弹窗的按钮样式
   const closePopup = document.getElementById("closePopup");
   closePopup.onclick = () => {
-    // 隐藏弹窗，恢复主页按钮
+    // 隐藏弹窗，恢复主页按钮和侧边栏状态
     card.classList.remove("full-view");
+    panel.innerHTML = "";
+
     document.getElementById("randomBtn").style.display = "inline-block";
     document.getElementById("allBtn").style.display = "inline-block";
     document.getElementById("addBtn").style.display = "inline-block";
+
+    // 让 all 按钮保持激活状态
+    allBtn.style.backgroundColor = "#888";  // 激活时的颜色
   };
 
-  // 编辑功能
+  // 继续处理 edit, archive, delete 的功能
   const editBtn = document.getElementById("editBtn");
   const archiveBtn = document.getElementById("archiveBtn");
   const deleteBtn = document.getElementById("deleteBtn");
@@ -150,6 +157,7 @@ function showCard(memo) {
     }
   };
 }
+
 
 
 const q = query(memosRef, orderBy("createdAt", "desc"));
