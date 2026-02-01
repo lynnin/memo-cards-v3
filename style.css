@@ -68,7 +68,6 @@ button:hover {
   opacity: 1;  /* Make it visible */
 }
 
-
 #memoList li {
   margin: 10px 0;
   cursor: pointer;
@@ -103,6 +102,44 @@ button:hover {
   font-size: 16px;
   padding: 8px;
   box-sizing: border-box;
+}
+
+/* Full-screen overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+  opacity: 0;  /* Initially hidden */
+  transition: opacity 0.3s ease;
+  z-index: -1; /* Keep behind the popup */
+}
+
+/* When popup is active, show overlay */
+#overlay.active {
+  opacity: 1;
+  z-index: 100; /* Bring overlay above content */
+}
+
+/* Smooth popup appearance */
+#card.full-view {
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: 20px auto;
+  max-width: 80%;
+  text-align: left;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+#card.full-view.active {
+  transform: scale(1);
+  opacity: 1;
 }
 
 /* Close button for the popup */
