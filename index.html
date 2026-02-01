@@ -2,33 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Memo Cards v3</title>
+  <title>Memo Cards</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <div id="sidebar" style="display:none;">
-    <h3>All Memos</h3>
-    <ul id="memoList"></ul> <!-- memo 列表 -->
-    <button id="archiveBtn">Archived</button> <!-- 归档按钮 -->
-  </div>
 
-  <div id="main-content">
-    <div id="card"></div>
-    <div id="panel"></div>
-    <div id="buttons">
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <h2>All Memos</h2>
+    <div id="memoList"></div>
+  </aside>
+
+  <!-- Left hover trigger (desktop only) -->
+  <div id="sidebar-hover-zone"></div>
+
+  <!-- Main -->
+  <main>
+    <div class="card" id="memoDisplay">
+      Click “Random” to draw a memo.
+    </div>
+
+    <div class="controls">
       <button id="randomBtn">Random</button>
       <button id="allBtn">All</button>
       <button id="addBtn">Add</button>
     </div>
-  </div>
+  </main>
 
-  <div id="overlay"></div>  <!-- Add this below your body tag -->
+  <!-- Modal -->
+  <div id="modalOverlay">
+    <div class="modal">
+      <textarea id="modalInput"></textarea>
+      <div class="modal-actions">
+        <button id="saveBtn">Save</button>
+        <button id="archiveBtn">Archive</button>
+        <button id="deleteBtn">Delete</button>
+        <button id="closeBtn">Close</button>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
