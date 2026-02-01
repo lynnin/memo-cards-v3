@@ -9,158 +9,85 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /***** DOM *****/
-const card = document.getElementById("card");
-const panel = document.getElementById("panel");
-const sidebar = document.getElementById("sidebar");
+let memos = [];
+let currentMemo = null;
+let sidebarOn = false;
+
+const memoDisplay = document.getElementById("memoDisplay");
 const memoList = document.getElementById("memoList");
+const sidebar = document.getElementById("sidebar");
+const modal = document.getElementById("modalOverlay");
+const modalInput = document.getElementById("modalInput");
 
-const randomBtn = document.getElementById("randomBtn");
-const allBtn = document.getElementById("allBtn");
-const addBtn = document.getElementById("addBtn");
-const archiveBtn = document.getElementById("archiveBtn");
+document.getElementById("randomBtn").onclick = () => {
+  const pool = memos.filter(m => !m.archived);
+  if (!pool.length) return;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  memoDisplay.textContent = pick.text;
+};
 
-/***** Helpers *****/
-function renderMarkdown(text) {
-  return marked.parse(text);
-}
+document.getElementById("addBtn").onclick = () => {
+  currentMemo = null;
+  modalInput.value = "";
+  modal.classList.add("show");
+};
 
-function showCard(markdownText) {
-  card.innerHTML = renderMarkdown(markdownText);
-  panel.innerHTML = "";
-}
+document.getElementById("allBtn").onclick = () => {
+  sidebarOn = !sidebarOn;
+  sidebar.classList.toggle("show", sidebarOn);
+};
 
-/***** Data *****/
-async function getAllMemos() {
-  const snap = await db.collection("memos").orderBy("created", "desc").get();
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-}
+document.getElementById("sidebar-hover-zone").onmouseenter = () => {
+  if (sidebarOn) sidebar.classList.add("show");
+};
 
-/***** Actions *****/
+sidebar.onmouseleave = () => {
+  if (sidebarOn) sidebar.classList.remove("show");
+};
 
-let isSidebarVisible = false;
-
-document.addEventListener("mousemove", (event) => {
-  if (isSidebarVisible && event.clientX < 50) {
-    sidebar.classList.add("visible");  // Show sidebar with transition
+document.getElementById("saveBtn").onclick = () => {
+  if (currentMemo) {
+    currentMemo.text = modalInput.value;
   } else {
-    sidebar.classList.remove("visible");  // Hide sidebar with transition
+    memos.push({ text: modalInput.value, archived: false });
   }
-});
+  closeModal();
+  renderList();
+};
 
-allBtn.onclick = async () => {
-  isSidebarVisible = !isSidebarVisible;
-  if (isSidebarVisible) {
-    sidebar.classList.add("visible"); // Add visible class for transition
-    allBtn.style.backgroundColor = "#888"; // Change button color
-  } else {
-    sidebar.classList.remove("visible"); // Remove visible class for transition
-    allBtn.style.backgroundColor = ""; // Restore button color
+document.getElementById("archiveBtn").onclick = () => {
+  if (currentMemo) {
+    currentMemo.archived = true;
   }
-
-  const memos = await getAllMemos();
-  memoList.innerHTML = '';
-
-  memos.forEach(memo => {
-    const li = document.createElement("li");
-    li.innerText = memo.content.substring(0, 50) + '...';
-    li.onclick = () => showCard(memo);  // Show full content when clicked
-    memoList.appendChild(li);
-  });
+  closeModal();
+  renderList();
 };
 
-
-// Display a random memo
-randomBtn.onclick = async () => {
-  const memos = await getAllMemos();
-  if (!memos.length) {
-    showCard("*(no memo yet)*");
-    return;
-  }
-  const m = memos[Math.floor(Math.random() * memos.length)];
-  showCard(m.content);
+document.getElementById("deleteBtn").onclick = () => {
+  memos = memos.filter(m => m !== currentMemo);
+  closeModal();
+  renderList();
 };
 
-// Add a new memo
-addBtn.onclick = () => {
-  panel.innerHTML = `
-    <textarea id="newMemo" placeholder="write markdown here..."></textarea>
-    <button id="saveMemo">save</button>
-  `;
+document.getElementById("closeBtn").onclick = closeModal;
 
-  document.getElementById("saveMemo").onclick = async () => {
-    const content = document.getElementById("newMemo").value.trim();
-    if (!content) return;
+function closeModal() {
+  modal.classList.remove("show");
+}
 
-    await db.collection("memos").add({
-      content,
-      created: firebase.firestore.FieldValue.serverTimestamp(),
-      key: "6d4a5fbb293f02d1ebfbb914b8eae6e7d9a0e5e6"
-    });
-
-    showCard(content);
-  };
-};
-
-// Archive a memo
-archiveBtn.onclick = async () => {
-  const memos = await getAllMemos();
-  panel.innerHTML = memos
-    .filter(memo => memo.weight === 0.2)  // Display archived memos only
-    .map(memo => `<div class="archived-item">${renderMarkdown(memo.content)}</div>`)
-    .join("");
-};
-
-// Popup functionality for full memo view
-function showCard(memo) {
-  // Hide main buttons
-  randomBtn.style.display = "none";
-  allBtn.style.display = "none";
-  addBtn.style.display = "none";
-
-  // Show overlay and popup
-  document.getElementById("overlay").classList.add("active");
-  card.classList.add("full-view", "active");
-  card.innerHTML = renderMarkdown(memo.content);
-  panel.innerHTML = `
-    <button id="closePopup" class="close-popup">×</button>
-    <button id="editBtn">Edit</button>
-    <button id="archiveBtn">Archive</button>
-    <button id="deleteBtn">Delete</button>
-  `;
-
-  const closePopup = document.getElementById("closePopup");
-  closePopup.onclick = () => {
-    // Close the modal and remove overlay
-    document.getElementById("overlay").classList.remove("active");
-    card.classList.remove("full-view", "active");
-
-    randomBtn.style.display = "inline-block";
-    allBtn.style.display = "inline-block";
-    addBtn.style.display = "inline-block";
-  };
-
-  // Handle edit, archive, and delete actions...
-  document.getElementById("editBtn").onclick = () => {
-    panel.innerHTML = `
-      <textarea id="editMemo">${memo.content}</textarea>
-      <button id="saveEdit">Save</button>
-    `;
-    document.getElementById("saveEdit").onclick = async () => {
-      const newContent = document.getElementById("editMemo").value.trim();
-      await db.collection("memos").doc(memo.id).update({ content: newContent });
-      showCard({ ...memo, content: newContent });
+function renderList() {
+  memoList.innerHTML = "";
+  memos.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "memo-item" + (m.archived ? " archived" : "");
+    div.textContent = m.text;
+    div.onclick = () => {
+      currentMemo = m;
+      modalInput.value = m.text;
+      modal.classList.add("show");
     };
-  };
+    memoList.appendChild(div);
+  });
+}
 
-  document.getElementById("archiveBtn").onclick = async () => {
-    await db.collection("memos").doc(memo.id).update({ weight: 0.2 });
-  };
-
-  document.getElementById("deleteBtn").onclick = async () => {
-    if (confirm("Are you sure you want to delete this memo?")) {
-      await db.collection("memos").doc(memo.id).delete();
-      showCard("Memo deleted!");
-    }
-  };
-};
 
