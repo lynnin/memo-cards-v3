@@ -2,9 +2,10 @@
 body {
   margin: 0;
   padding: 40px 20px;
-  background: #f6f3ee;
-  font-family: serif;
+  background-color: #2c2c2c; /* Dark gray background */
+  font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
+  color: #e0e0e0; /* Light gray text */
 }
 
 #card {
@@ -27,6 +28,15 @@ button {
   padding: 8px 14px;
   font-size: 14px;
   cursor: pointer;
+  background-color: #444;
+  color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #666; /* Slightly lighter on hover */
 }
 
 #panel {
@@ -36,7 +46,6 @@ button {
   font-size: 16px;
 }
 
-
 /* Side panel styles */
 #sidebar {
   position: fixed;
@@ -44,10 +53,12 @@ button {
   left: 0;
   width: 250px;
   height: 100%;
-  background-color: #f1f1f1;
+  background-color: #333;
+  color: #f0f0f0;
   padding: 20px;
   overflow-y: auto;
   transition: all 0.3s ease;
+  display: none;
 }
 
 #memoList li {
@@ -56,9 +67,8 @@ button {
 }
 
 #memoList li:hover {
-  background-color: #ddd;
+  background-color: #555;
 }
-
 
 /* Full memo view (popup) styles */
 #card.full-view {
@@ -87,7 +97,6 @@ button {
   box-sizing: border-box;
 }
 
-
 /* Close button for the popup */
 #closePopup {
   position: absolute;
@@ -95,10 +104,11 @@ button {
   right: 10px;
   font-size: 28px;
   font-weight: bold;
-  color: #ff4081; /* 彩色 */
+  color: #ff4081;
   cursor: pointer;
 }
 
 #closePopup:hover {
-  color: #e91e63; /* 鼠标悬停时改变颜色 */
+  color: #e91e63;
 }
+
