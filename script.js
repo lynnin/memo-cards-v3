@@ -75,6 +75,7 @@ addBtn.onclick = () => {
 allBtn.onclick = async () => {
   isSidebarVisible = !isSidebarVisible;
   sidebar.classList.toggle("show", isSidebarVisible);
+  allBtn.classList.toggle("active", isSidebarVisible); // Toggle active state on the button
 
   const memos = await getAllMemos();
   renderList(memos);
