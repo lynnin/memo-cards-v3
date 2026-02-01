@@ -158,6 +158,37 @@ function showCard(memo) {
   };
 }
 
+// 控制 all 按钮和侧边栏显示隐藏
+let isSidebarVisible = false;
+
+allBtn.onclick = async () => {
+  isSidebarVisible = !isSidebarVisible; // 切换状态
+
+  if (isSidebarVisible) {
+    sidebar.style.display = "block"; // 显示侧边栏
+    allBtn.style.backgroundColor = "#888"; // 改变按钮颜色
+  } else {
+    sidebar.style.display = "none"; // 隐藏侧边栏
+    allBtn.style.backgroundColor = ""; // 恢复按钮颜色
+  }
+
+  const memos = await getAllMemos();
+  memoList.innerHTML = '';
+
+  memos.forEach(memo => {
+    const li = document.createElement("li");
+    li.innerText = memo.content.substring(0, 50) + '...'; // 显示部分文本
+    li.onclick = () => showCard(memo);  // 点击显示完整内容
+    memoList.appendChild(li);
+  });
+};
+
+// 在鼠标移动到靠左位置时显示侧边栏，前提是 all 按钮被激活
+document.addEventListener("mousemove", (event) => {
+  if (isSidebarVisible && event.clientX < 50) {
+    sidebar.style.display = "block"; // 鼠标靠左时显示侧边栏
+  }
+});
 
 
 const q = query(memosRef, orderBy("createdAt", "desc"));
