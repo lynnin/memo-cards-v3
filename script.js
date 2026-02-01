@@ -36,18 +36,25 @@ async function getAllMemos() {
 }
 
 /***** Actions *****/
-// Toggle sidebar visibility and change button color when clicked
+
 let isSidebarVisible = false;
 
-allBtn.onclick = async () => {
-  isSidebarVisible = !isSidebarVisible; // Toggle sidebar visibility
-
-  if (isSidebarVisible) {
-    sidebar.style.display = "block"; // Show sidebar
-    allBtn.style.backgroundColor = "#888"; // Change button color when activated
+document.addEventListener("mousemove", (event) => {
+  if (isSidebarVisible && event.clientX < 50) {
+    sidebar.classList.add("visible");  // Show sidebar with transition
   } else {
-    sidebar.style.display = "none"; // Hide sidebar
-    allBtn.style.backgroundColor = ""; // Restore original button color
+    sidebar.classList.remove("visible");  // Hide sidebar with transition
+  }
+});
+
+allBtn.onclick = async () => {
+  isSidebarVisible = !isSidebarVisible;
+  if (isSidebarVisible) {
+    sidebar.classList.add("visible"); // Add visible class for transition
+    allBtn.style.backgroundColor = "#888"; // Change button color
+  } else {
+    sidebar.classList.remove("visible"); // Remove visible class for transition
+    allBtn.style.backgroundColor = ""; // Restore button color
   }
 
   const memos = await getAllMemos();
@@ -60,6 +67,7 @@ allBtn.onclick = async () => {
     memoList.appendChild(li);
   });
 };
+
 
 // Display a random memo
 randomBtn.onclick = async () => {
