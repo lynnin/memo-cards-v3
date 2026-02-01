@@ -44,8 +44,8 @@ allBtn.onclick = async () => {
 
   memos.forEach(memo => {
     const li = document.createElement("li");
-    li.innerText = memo.content.substring(0, 50) + '...';
-    li.onclick = () => showCard(memo.content);
+    li.innerText = memo.content.substring(0, 50) + '...'; // 显示部分文本
+    li.onclick = () => showCard(memo);  // 点击显示完整内容
     memoList.appendChild(li);
   });
 };
@@ -91,21 +91,23 @@ archiveBtn.onclick = async () => {
     .join("");
 };
 
-function showCard(markdownText) {
-  card.innerHTML = renderMarkdown(markdownText);
+// 弹窗功能按钮
+function showCard(memo) {
+  card.innerHTML = renderMarkdown(memo.content);
   panel.innerHTML = `
-    <button id="editBtn">Edit</button>
     <button id="archiveBtn">Archive</button>
     <button id="deleteBtn">Delete</button>
+    <button id="editBtn">Edit</button>
   `;
-  
+
+  // 使按钮仅在点击后显示
   const editBtn = document.getElementById("editBtn");
   const archiveBtn = document.getElementById("archiveBtn");
   const deleteBtn = document.getElementById("deleteBtn");
 
   editBtn.onclick = () => {
     panel.innerHTML = `
-      <textarea id="editMemo">${markdownText}</textarea>
+      <textarea id="editMemo">${memo.content}</textarea>
       <button id="saveEdit">Save</button>
     `;
     document.getElementById("saveEdit").onclick = async () => {
@@ -113,14 +115,13 @@ function showCard(markdownText) {
       await db.collection("memos").doc(memo.id).update({
         content: newContent,
       });
-      showCard(newContent);
+      showCard({ ...memo, content: newContent });
     };
   };
 
-  // 归档和删除按钮逻辑
   archiveBtn.onclick = async () => {
     await db.collection("memos").doc(memo.id).update({
-      weight: 0.2  // 归档：降低随机显示概率
+      weight: 0.2  // 将归档的 memos 的显示概率减少
     });
   };
 
@@ -131,6 +132,7 @@ function showCard(markdownText) {
     }
   };
 }
+
 
 const q = query(memosRef, orderBy("createdAt", "desc"));
 
