@@ -1,8 +1,8 @@
 /***** Firebase init *****/
 const firebaseConfig = {
   apiKey: "AIzaSyCjNsWPJTH5f1O4YhM1jJ32UZXvNZfmXIA",
-  authDomain: "memo-cards-v3.firebaseapp.com",
-  projectId: "memo-cards-v3",
+  authDomain: "memo-cards-v2.firebaseapp.com",
+  projectId: "memo-cards-v2",
 };
 
 firebase.initializeApp(firebaseConfig);
